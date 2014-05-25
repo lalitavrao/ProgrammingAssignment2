@@ -7,14 +7,14 @@
 # 2. get the value of the matrix
 # 3. set the value of inverse of the matrix
 # 4. get the value of inverse of the matrix
-makeCacheMatrix <- function(x = matrix()) {
-  # Inititalize the inv so that we will not get an error when we check for NULL or not in CacheSolve function.
+makeCacheMatrix <- function(myx = matrix()) {
+  # Inititalize the inv so that we will not get an error when we check for not NULL in CacheSolve function.
   inv <- NULL
   set <- function(y) {
-    x <<- y
+    myx <<- y
     inv <<- NULL
   }
-  get <- function() x
+  get <- function() myx
   setinverse <- function(inverse) inv <<- inverse
   getinverse <- function() inv
   # vector containing all 4 functions

@@ -7,14 +7,14 @@
 # 2. get the value of the matrix
 # 3. set the value of inverse of the matrix
 # 4. get the value of inverse of the matrix
-makeCacheMatrix <- function(myx = matrix()) {
-  # Inititalize the inv so that we will not get an error when we check for not NULL in CacheSolve function.
+makeCacheMatrix <- function(x = matrix()) {
+  # Inititalize the inv so that we will not get an error when we check for NULL or not in CacheSolve function.
   inv <- NULL
   set <- function(y) {
-    myx <<- y
+    x <<- y
     inv <<- NULL
   }
-  get <- function() myx
+  get <- function() x
   setinverse <- function(inverse) inv <<- inverse
   getinverse <- function() inv
   # vector containing all 4 functions
@@ -28,21 +28,78 @@ makeCacheMatrix <- function(myx = matrix()) {
 # setinverse function.
 
 # This function assumes that the matrix is always invertible.
-cacheSolve <- function(mtrx, ...) {
+cacheSolve <- function(mx, ...) {
   
-  # get inverse.
+  # get inverse.   
   
-  myinv <- mtrx$getinverse()
+  inv1 <- mx$getinverse()
   # Check to see if inverse is already in cache.
-  # If it is in cache, the value is not NULL and return inverse
+  #  If it is in cache, the value is not NULL and return inverse
   
-  if(!is.null(myinv)) {
+  if(!is.null(inv1)) {
     message("getting cached data.")
-    return(myinv)
+    return(inv1)
   }
   # This is the first call to solve to set the inverse
-  data <- mtrx$get()
-  myinv <- solve(data)
-  mtrx$setinverse(myinv)
-  myinv
+  data <- mx$get()
+  inv1 <- solve(data)
+  mx$setinverse(inv1)
+  inv1
 }
+
+#Results
+# > m <- rbind(c(1,2), c(2,1))
+# > m
+#      [,1] [,2]
+# [1,]    1    2
+# [2,]    2    1
+# > l = makeCacheMatrix(m)
+# > l$get()
+#      [,1] [,2]
+# [1,]    1    2
+# [2,]    2    1
+# First time we run no data in cache
+# > cacheSolve(l)
+#       [,1]       [,2]
+# [1,] -0.3333333  0.6666667
+# [2,]  0.6666667 -0.3333333
+# Second run value is in cache
+# > cacheSolve(l)
+# getting cached data.
+#       [,1]       [,2]
+# [1,] -0.3333333  0.6666667
+# [2,]  0.6666667 -0.3333333
+# Third run value is still in cache
+# > cacheSolve(l)
+# getting cached data.
+#        [,1]       [,2]
+# [1,] -0.3333333  0.6666667
+# [2,]  0.6666667 -0.3333333
+# try with 3x3 matrix
+# > z <- rbind(c(1,2,3), c(0,1,4), c(5,6,0))
+# > z
+# [,1] [,2] [,3]
+# [1,]    1    2    3
+# [2,]    0    1    4
+# [3,]    5    6    0
+# Set the new value to the matrix
+# Cache is cleared
+# > l$set(z)
+# > l$get()
+#       [,1] [,2] [,3]
+# [1,]    1    2    3
+# [2,]    0    1    4
+# [3,]    5    6    0
+# Frist call to get the inverse
+# > cacheSolve(l)
+#       [,1] [,2] [,3]
+# [1,]  -24   18    5
+# [2,]   20  -15   -4
+# [3,]   -5    4    1
+# > cacheSolve(l)
+# getting cached data.
+#       [,1] [,2] [,3]
+# [1,]  -24   18    5
+# [2,]   20  -15   -4
+# [3,]   -5    4    1
+# > 
